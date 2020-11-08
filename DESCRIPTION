@@ -5,11 +5,11 @@ Authors@R:
     person(given = "Matthew",
            family = "Smith",
            role = c("aut", "cre"),
-           email = "M.SMith3@napier.ac.uk")
+           email = "M.Smith3@napier.ac.uk")
 Description: Scrape data on UK MPs.
-License: `use_gpl3_license()`
+License: GPL-3
 Encoding: UTF-8
-Imports: rvest,xml2
+Imports: rvest,xml2,stringr,gender,tibble
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
