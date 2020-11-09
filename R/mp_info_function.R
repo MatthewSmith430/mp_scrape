@@ -139,9 +139,17 @@ mp_info<-function(constituency){
 
   nat1<-dplyr::filter(data_tab,X1=="Nationality")
   nat2<-nat1$X2
+  CN<-purrr::is_empty(nat2)
+  if (CHECK==TRUE){
+    nat3<-NA
+  }else{nat3<-nat2}
 
   am1<-dplyr::filter(data_tab,X1=="Alma mater")
   am2<-am1$X2
+  CHECK<-purrr::is_empty(am2)
+  if (CHECK==TRUE){
+    am3<-NA
+  }else{am3<-am2}
   DATA<-tibble::tibble(constituency=constituency,
                        constituency_status=ele3,
                        mp_name=mp_name,
@@ -163,8 +171,8 @@ mp_info<-function(constituency){
                        birth_year=birth_year,
                        birth_month=birth_month,
                        birth_day=birth_day,
-                       natioanlity=nat2,
-                       alma_mater=am2,
+                       natioanlity=nat3,
+                       alma_mater=am3,
                        hansard_link=hansard_link
                        )
   return(DATA)
