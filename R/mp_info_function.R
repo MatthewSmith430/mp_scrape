@@ -110,7 +110,9 @@ mp_info<-function(constituency){
                con2,"_(UK_Parliament_constituency)")
   webpage <- xml2::read_html(wiki)
 
-  GG<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
+  #GG<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
+  #GG<-".infobox > tbody:nth-child(1) > tr:nth-child(11) > td:nth-child(2)"
+  GG<-".infobox > tbody:nth-child(1) > tr:nth-child(11) > td:nth-child(2) > a:nth-child(1)"
 
   mp1<-rvest::html_nodes(webpage,css = GG)
   mp2<-rvest::html_attr(mp1,"href")
