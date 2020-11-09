@@ -140,7 +140,7 @@ mp_info<-function(constituency){
   nat1<-dplyr::filter(data_tab,X1=="Nationality")
   nat2<-nat1$X2
   CN<-purrr::is_empty(nat2)
-  if (CHECK==TRUE){
+  if (CN==TRUE){
     nat3<-NA
   }else{nat3<-nat2}
 
