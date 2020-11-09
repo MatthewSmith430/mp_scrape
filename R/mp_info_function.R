@@ -3,7 +3,7 @@
 #' @description Provides current data on an MP for a particular constituency
 #' @param constituency constituency name
 #' @export
-#' @return Datagrame
+#' @return Dataframe of current MP information for constituency
 #'
 #'
 mp_info<-function(constituency){
@@ -39,32 +39,130 @@ mp_info<-function(constituency){
   hansard_link<-paste0("https://hansard.parliament.uk/search/MemberContributions?memberId=",
                        member_id,"&type=Spoken")
 
-  career_url<-paste0(link_info,"/career")
+  career_url<-paste0("https://members.parliament.uk/member/",member_id,"/career")
   #constit_id
-  #number_elected
+
+  ne_select<-".secondary-info"
+  CP<-xml2::read_html(career_url)
+  NE1<-rvest::html_nodes(CP,css = ne_select)
+  NE2<-rvest::html_text(NE1)
+  NE2<-NE2[[1]]
+  NE2<-gsub("\r\n","",NE2)
+  NE2<-trimws(NE2)
+  NE3<-readr::parse_number(NE2)
+
+  TS<-"div.card-list:nth-child(2) > a:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)"
+
+  TS1<-rvest::html_nodes(CP,css =TS)
+  TS2<-rvest::html_text(TS1)
+  TS3<-gsub("\r\n","",TS2)
+  TS4<-trimws(TS3)
+  time_split<-stringr::str_split(TS4,"-")
+  time_split<-unlist(time_split)
   #first_time
+  first1<-time_split[[1]]
+  first1<-trimws(first1)
+  first_date<-as.Date(first1, format = "%d %B %Y")
+
+  first_year<-lubridate::year(first_date)
+  first_month<-lubridate::month(first_date)
+
   #last_time
+  last1<-time_split[[2]]
+  last1<-trimws(last1)
+
+  if (last1=="Present"){
+    last_date<-"current"
+    last_year<-"current"
+    last_month<-"current"
+  }else{
+    last_date<-as.Date(last1, format = "%d %B %Y")
+    last_year<-lubridate::year(first_date)
+    last_month<-lubridate::month(first_date)
+  }
+
   #committee
-  #majority
-  #tunrout
-  #electorate
-  #vote
-  #share
-  #change
+  com_select<-"div.card > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)"
+  com1<-rvest::html_nodes(CP,css =com_select)
+  com2<-rvest::html_text(com1)
+  com3<-gsub("\r\n","",com2)
+  com3<-trimws(com3)
+  com3<-unique(com3)
+  com4<-stringr::str_c(com3,collapse='/')
+
   #status
+  ele_url<-paste0("https://members.parliament.uk/member/",member_id,"/electionresult")
+  stat_select<-".content > div:nth-child(1)"
+  EP<-xml2::read_html(ele_url)
+  ele1<-rvest::html_nodes(EP,css =stat_select)
+  ele2<-rvest::html_text(ele1)
+  ele3<-gsub("\r\n","",ele2)
+  ele3<-trimws(ele3)
+
+
+
   first_g<-gender::gender(names=first_name,
                           method="ssa",year="2012")
   gender1<-first_g$gender
 
+  con2<-csearch<-gsub(" ","_",constituency)
+  wiki<-paste0("https://en.wikipedia.org/wiki/",
+               con2,"_(UK_Parliament_constituency)")
+  webpage <- xml2::read_html(wiki)
 
+  GG<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
+
+  mp1<-rvest::html_nodes(webpage,css = GG)
+  mp2<-rvest::html_attr(mp1,"href")
+  mp_link1<-paste0("https://en.wikipedia.org/",
+                   mp2)
+
+  mppage <- xml2::read_html(mp_link1)
+  mp_node<-rvest::html_nodes(mppage,"table.vcard")
+  mp_tab<-rvest::html_table(mp_node,header=F)
+  data_tab<-mp_tab[[1]]
+  DOB<-dplyr::filter(data_tab,X1=="Born")
+  DOB1<-gsub(" ","",DOB$X2)
+  DOB2<-stringr::str_split(DOB1,"[(]",
+                          simplify = T)
+  DOB3<-stringr::str_split(DOB2,"[)]",
+                          simplify = T)
+  DOB_data<-DOB3[2,1]
+  #ymd
+  DOB_split<-stringr::str_split(DOB_data,"-")
+  DOB_split<-unlist(DOB_split)
+  birth_year<-DOB_split[[1]]
+  birth_month<-DOB_split[[2]]
+  birth_day<-DOB_split[[3]]
+
+  nat1<-dplyr::filter(data_tab,X1=="Nationality")
+  nat2<-nat1$X2
+
+  am1<-dplyr::filter(data_tab,X1=="Alma mater")
+  am2<-am1$X2
   DATA<-tibble::tibble(constituency=constituency,
+                       constituency_status=ele3,
                        mp_name=mp_name,
                        member_id=member_id,
                        mp_link=link_info,
                        first_name=first_name,
                        surname=surname,
                        party=party_name,
+                       first_date=first_date,
+                       first_month=first_month,
+                       first_year=first_year,
+                       last_date=last_date,
+                       last_month=last_month,
+                       last_year=last_year,
+                       number_times_elected=NE3,
+                       membership_post_gov_opp_committee=com4,
                        gender=gender1,
+                       dob=DOB_data,
+                       birth_year=birth_year,
+                       birth_month=birth_month,
+                       birth_day=birth_day,
+                       natioanlity=nat2,
+                       alma_mater=am2,
                        hansard_link=hansard_link
                        )
   return(DATA)

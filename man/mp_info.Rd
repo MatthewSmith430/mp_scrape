@@ -10,7 +10,7 @@ mp_info(constituency)
 \item{constituency}{constituency name}
 }
 \value{
-Datagrame
+Dataframe of current MP information for constituency
 }
 \description{
 Provides current data on an MP for a particular constituency
