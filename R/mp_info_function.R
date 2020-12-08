@@ -134,6 +134,12 @@ mp_info<-function(constituency){
     mp2<-rvest::html_attr(mpB,"href")
   }else{mp2<-mp2}
 
+  CHECK1<-stringr::str_detect(mp2,"(UK_Parliament_constituency)")
+  if(CHECK1==TRUE){
+    GC<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
+    mpC<-rvest::html_nodes(webpage,css = GC)
+    mp2<-rvest::html_attr(mpC,"href")
+  }else{mp2<-mp2}
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
 
