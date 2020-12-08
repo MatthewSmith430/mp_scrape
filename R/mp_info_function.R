@@ -128,6 +128,12 @@ mp_info<-function(constituency){
 
   }else{mp2<-rvest::html_attr(mp1,"href")}
 
+  if(purrr::is_empty(mp2)){
+    GB<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
+    mpB<-rvest::html_nodes(webpage,css = GB)
+    mp2<-rvest::html_attr(mpB,"href")
+  }else{mp2<-mp2}
+
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
 
