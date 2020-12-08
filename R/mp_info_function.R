@@ -104,6 +104,9 @@ mp_info<-function(constituency){
   first_g<-gender::gender(names=first_name,
                           method="ssa",year="2012")
   gender1<-first_g$gender
+  if(purrr::is_empty(gender1)==TRUE){
+    gender1<-"NA"
+  }else{gender1<-gender1}
 
   con2<-csearch<-gsub(" ","_",constituency)
   wiki<-paste0("https://en.wikipedia.org/wiki/",
@@ -113,15 +116,24 @@ mp_info<-function(constituency){
   #GG<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
   #GG<-".infobox > tbody:nth-child(1) > tr:nth-child(11) > td:nth-child(2)"
   GG<-".infobox > tbody:nth-child(1) > tr:nth-child(11) > td:nth-child(2) > a:nth-child(1)"
+  #CS selector
+  #.infobox > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2)
 
   mp1<-rvest::html_nodes(webpage,css = GG)
-  mp2<-rvest::html_attr(mp1,"href")
+  LEN_MP<-length(mp1)
+  if (LEN_MP==0){
+    GA<-".infobox > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2) > a:nth-child(1)"
+    mpA<-rvest::html_nodes(webpage,css = GA)
+    mp2<-rvest::html_attr(mpA,"href")
+
+  }else{mp2<-rvest::html_attr(mp1,"href")}
+
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
 
   mppage <- xml2::read_html(mp_link1)
   mp_node<-rvest::html_nodes(mppage,"table.vcard")
-  mp_tab<-rvest::html_table(mp_node,header=F)
+  mp_tab<-rvest::html_table(mp_node,header=F,fill = TRUE)
   data_tab<-mp_tab[[1]]
   DOB<-dplyr::filter(data_tab,X1=="Born")
   DOB1<-gsub(" ","",DOB$X2)
@@ -148,7 +160,7 @@ mp_info<-function(constituency){
   am2<-am1$X2
   CHECK<-purrr::is_empty(am2)
   if (CHECK==TRUE){
-    am3<-NA
+    am3<-"NA"
   }else{am3<-am2}
   DATA<-tibble::tibble(constituency=constituency,
                        constituency_status=ele3,
