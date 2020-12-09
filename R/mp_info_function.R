@@ -20,7 +20,10 @@ mp_info<-function(constituency){
   p2<-rvest::html_text(p1)
   p3<-gsub("\r\n","",p2)
   mp_name<-gsub("  ","",p3)
-  first_name<-stringr::word(mp_name, 1)
+  mp_nameA<-tolower(mp_name)
+  mp_name2<- gsub(" *(ms)|(miss)|(dr)|(mrs)|(miss)$", "", mp_nameA)
+  mp_name3<-trimws(mp_name2)
+  first_name<-stringr::word(mp_name3, 1)
   surname<-stringr::word(mp_name,-1)
 
   s1<-rvest::html_nodes(PAGE,css = s_selector_name)
@@ -108,7 +111,9 @@ mp_info<-function(constituency){
     gender1<-"NA"
   }else{gender1<-gender1}
 
-  con2<-csearch<-gsub(" ","_",constituency)
+  constituency2<-gsub(",","",constituency)
+
+  con2<-csearch<-gsub(" ","_",constituency2)
   wiki<-paste0("https://en.wikipedia.org/wiki/",
                con2,"_(UK_Parliament_constituency)")
   webpage <- xml2::read_html(wiki)
@@ -153,13 +158,27 @@ mp_info<-function(constituency){
                           simplify = T)
   DOB3<-stringr::str_split(DOB2,"[)]",
                           simplify = T)
-  DOB_data<-DOB3[2,1]
-  #ymd
-  DOB_split<-stringr::str_split(DOB_data,"-")
-  DOB_split<-unlist(DOB_split)
-  birth_year<-DOB_split[[1]]
-  birth_month<-DOB_split[[2]]
-  birth_day<-DOB_split[[3]]
+  DOB_LEN<-dim(DOB3)[[1]]
+  if (DOB_LEN>1){
+    DOB_data<-DOB3[2,1]
+    #ymd
+    DOB_split<-stringr::str_split(DOB_data,"-")
+    DOB_split<-unlist(DOB_split)
+    birth_year<-DOB_split[[1]]
+    birth_month<-DOB_split[[2]]
+    birth_day<-DOB_split[[3]]
+  }else{
+    dd<-DOB3[1,1]
+    dd2<-c(dd)
+    DOB_data<-stringr::str_extract_all(dd2, "\\d+")
+    DOB_data2<-DOB_data[[1]]
+    birth_year<-DOB_data2
+    birth_month<-"NA"
+    birth_day<-"NA"
+
+  }
+
+
 
   nat1<-dplyr::filter(data_tab,X1=="Nationality")
   nat2<-nat1$X2
