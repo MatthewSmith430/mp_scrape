@@ -21,10 +21,10 @@ mp_info<-function(constituency){
   p3<-gsub("\r\n","",p2)
   mp_name<-gsub("  ","",p3)
   mp_nameA<-tolower(mp_name)
-  mp_name2<- gsub(" *(ms)|(miss)|(dr)|(mrs)|(miss)$", "", mp_nameA)
+  mp_name2<- gsub(" *(ms)|(miss)|(dr)|(mrs)|(miss)|(mr)|(sir)$", "", mp_nameA)
   mp_name3<-trimws(mp_name2)
   first_name<-stringr::word(mp_name3, 1)
-  surname<-stringr::word(mp_name,-1)
+  surname<-tolower(stringr::word(mp_name,-1))
 
   s1<-rvest::html_nodes(PAGE,css = s_selector_name)
   s2<-rvest::html_text(s1)
