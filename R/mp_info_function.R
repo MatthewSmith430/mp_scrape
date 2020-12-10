@@ -207,7 +207,7 @@ mp_info<-function(constituency){
     dd2<-c(dd)
     DOB_dataA<-stringr::str_extract_all(dd2, "\\d+")
     DOB_data2<-DOB_dataA[[1]]
-    birth_year<-DOB_data2
+    birth_year<-DOB_data2[[1]]
     birth_month<-"NA"
     birth_day<-"NA"
     DOB_data<-as.character(birth_year)
