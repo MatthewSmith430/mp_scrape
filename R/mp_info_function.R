@@ -152,6 +152,21 @@ mp_info<-function(constituency){
     mp2<-rvest::html_attr(mpD,"href")
   }else{mp2<-mp2}
 
+  CHECK2<-stringr::str_detect(mp2,"United_Kingdom_general_election")
+  if(CHECK2==TRUE){
+    GE<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
+    mpE<-rvest::html_nodes(webpage,css = GE)
+    mp2<-rvest::html_attr(mpE,"href")
+  }else{mp2<-mp2}
+
+  CHECK3<-stringr::str_detect(mp2,"United_Kingdom_general_election")
+  if(CHECK3==TRUE){
+    GF<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
+    mpF<-rvest::html_nodes(webpage,css = GF)
+    mp2<-rvest::html_attr(mpF,"href")
+  }else{mp2<-mp2}
+
+
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
 
