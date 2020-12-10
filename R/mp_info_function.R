@@ -113,7 +113,7 @@ mp_info<-function(constituency){
 
   #constituency2<-gsub(",","",constituency)
 
-  con2<-csearch<-gsub(" ","_",constituency)
+  con2<-gsub(" ","_",constituency)
   wiki<-paste0("https://en.wikipedia.org/wiki/",
                con2,"_(UK_Parliament_constituency)")
   webpage <- xml2::read_html(wiki)
@@ -137,6 +137,12 @@ mp_info<-function(constituency){
     GB<-".infobox > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > a:nth-child(1)"
     mpB<-rvest::html_nodes(webpage,css = GB)
     mp2<-rvest::html_attr(mpB,"href")
+  }else{mp2<-mp2}
+
+  if(purrr::is_empty(mp2)){
+    Gemp<-".infobox > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(2) > a:nth-child(1)"
+    mpEMP<-rvest::html_nodes(webpage,css = Gemp)
+    mp2<-rvest::html_attr(mpEMP,"href")
   }else{mp2<-mp2}
 
   CHECK1<-stringr::str_detect(mp2,"(UK_Parliament_constituency)")
@@ -166,6 +172,13 @@ mp_info<-function(constituency){
     mp2<-rvest::html_attr(mpF,"href")
   }else{mp2<-mp2}
 
+  CHECK4<-stringr::str_detect(mp2,"(UK_Parliament_constituency)")
+  if(CHECK4==TRUE){
+    GG<-".infobox > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2) > a:nth-child(1)"
+    mpG<-rvest::html_nodes(webpage,css = GG)
+    mp2<-rvest::html_attr(mpG,"href")
+  }else{mp2<-mp2}
+
 
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
@@ -192,11 +205,12 @@ mp_info<-function(constituency){
   }else{
     dd<-DOB3[1,1]
     dd2<-c(dd)
-    DOB_data<-stringr::str_extract_all(dd2, "\\d+")
-    DOB_data2<-DOB_data[[1]]
+    DOB_dataA<-stringr::str_extract_all(dd2, "\\d+")
+    DOB_data2<-DOB_dataA[[1]]
     birth_year<-DOB_data2
     birth_month<-"NA"
     birth_day<-"NA"
+    DOB_data<-as.character(birth_year)
 
   }
 
