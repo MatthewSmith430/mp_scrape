@@ -214,6 +214,14 @@ mp_info<-function(constituency){
 
   }
 
+  if (purrr::is_empty(DOB_data)){
+    DOB_data<-"NA"
+  }else{DOB_data<-DOB_data}
+
+  if (purrr::is_empty(birth_year)){
+    birth_year<-"NA"
+  }else{birth_year<-DOB_data}
+
 
 
   nat1<-dplyr::filter(data_tab,X1=="Nationality")
