@@ -111,9 +111,9 @@ mp_info<-function(constituency){
     gender1<-"NA"
   }else{gender1<-gender1}
 
-  constituency2<-gsub(",","",constituency)
+  #constituency2<-gsub(",","",constituency)
 
-  con2<-csearch<-gsub(" ","_",constituency2)
+  con2<-csearch<-gsub(" ","_",constituency)
   wiki<-paste0("https://en.wikipedia.org/wiki/",
                con2,"_(UK_Parliament_constituency)")
   webpage <- xml2::read_html(wiki)
@@ -145,6 +145,13 @@ mp_info<-function(constituency){
     mpC<-rvest::html_nodes(webpage,css = GC)
     mp2<-rvest::html_attr(mpC,"href")
   }else{mp2<-mp2}
+
+  if(purrr::is_empty(mp2)){
+    GD<-".infobox > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > a:nth-child(1)"
+    mpD<-rvest::html_nodes(webpage,css = GD)
+    mp2<-rvest::html_attr(mpD,"href")
+  }else{mp2<-mp2}
+
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
 
