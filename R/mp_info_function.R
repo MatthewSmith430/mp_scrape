@@ -179,6 +179,13 @@ mp_info<-function(constituency){
     mp2<-rvest::html_attr(mpG,"href")
   }else{mp2<-mp2}
 
+  CHECK5<-stringr::str_detect(mp2,"(Parliament_of_Scotland_constituency)")
+  if(CHECK5==TRUE){
+    Gscot<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
+    mpscot<-rvest::html_nodes(webpage,css = Gscot)
+    mp2<-rvest::html_attr(mpscot,"href")
+  }else{mp2<-mp2}
+
 
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
