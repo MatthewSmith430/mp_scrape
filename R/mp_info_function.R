@@ -158,8 +158,8 @@ mp_info<-function(constituency){
                           simplify = T)
   DOB3<-stringr::str_split(DOB2,"[)]",
                           simplify = T)
-  DOB_LEN<-dim(DOB3)[[1]]
-  if (DOB_LEN>1){
+  DOB_LEN<-sum(dim(DOB3))
+  if (DOB_LEN>4){
     DOB_data<-DOB3[2,1]
     #ymd
     DOB_split<-stringr::str_split(DOB_data,"-")
