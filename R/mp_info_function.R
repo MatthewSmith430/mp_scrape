@@ -26,7 +26,7 @@ mp_info<-function(constituency){
     CNAME3<-gsub("\r\n","",CNAME2)
     CNAME4<-trimws(CNAME3)
     CNAME5<-stringr::str_squish(CNAME4)
-    CNAME6<-strsplit(CNAME5, split="Conservative|Labour|Liberal Democtrat|SNP")
+    CNAME6<-strsplit(CNAME5, split="Conservative|Labour|Liberal Democrat|SNP")
     CLIST<-list()
     for (i in 1:length(CNAME6)){
       DF<-as.data.frame(t(as.data.frame(CNAME6[[i]])))
@@ -36,6 +36,7 @@ mp_info<-function(constituency){
     CNAME7<-purrr::map_df(CLIST,data.frame)
     CNAME8<-dplyr::mutate(CNAME7,order=1:length(CNAME7$name))
     CNAME8$location<-tolower(CNAME8$location)
+    CNAME8$location<-trimws(CNAME8$location)
     check_name<-tolower(constituency)
     CNAME9<-dplyr::filter(CNAME8,location==check_name)
     ORD<-CNAME9$order
