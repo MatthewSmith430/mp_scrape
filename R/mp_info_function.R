@@ -19,8 +19,9 @@ mp_info<-function(constituency){
   p1<-rvest::html_nodes(PAGE,css = p_selector_name)
   p2<-rvest::html_text(p1)
   p3<-gsub("\r\n","",p2)
-  if(p3>1){
-    CNAME<-rvest::html_nodes(PAGE,css=check_sel)
+  PL<-length(p3)
+  if(PL>1){
+    CNAME<-rvest::html_nodes(PAGE,css= c_selector_name)
     CNAME2<-rvest::html_text(CNAME)
     CNAME3<-gsub("\r\n","",CNAME2)
     CNAME4<-trimws(CNAME3)
