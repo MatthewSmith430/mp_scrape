@@ -43,6 +43,7 @@ mp_info<-function(constituency){
     p2<-rvest::html_text(p1[[ORD]])
     p3<-gsub("\r\n","",p2)
   }else{
+    ORD<-1
     p2<-p2
     p3<-p3
   }
@@ -54,12 +55,12 @@ mp_info<-function(constituency){
   surname<-tolower(stringr::word(mp_name,-1))
 
   s1<-rvest::html_nodes(PAGE,css = s_selector_name)
-  s2<-rvest::html_text(s1)
+  s2<-rvest::html_text(s1[[ORD]])
   s3<-gsub("\r\n","",s2)
   party_name<-gsub("  ","",s3)
 
   c1<-rvest::html_nodes(PAGE,css = c_selector_name)
-  c2<-rvest::html_attr(c1,"href")
+  c2<-rvest::html_attr(c1[[ORD]],"href")
 
   link_info<-paste0("https://members.parliament.uk",c2)
   link_split<-strsplit(c2,"/")
