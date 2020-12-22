@@ -209,6 +209,12 @@ mp_info<-function(constituency){
     birth_year<-DOB_split[[1]]
     birth_month<-DOB_split[[2]]
     birth_day<-DOB_split[[3]]
+  }else if(DOB_LEN==0){
+    DOB_data2<-"NA"
+    DOB_data<-"NA"
+    birth_year<-"NA"
+    birth_month<-"NA"
+    birth_day<-"NA"
   }else{
     dd<-DOB3[1,1]
     dd2<-c(dd)
