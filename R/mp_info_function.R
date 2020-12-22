@@ -19,9 +19,34 @@ mp_info<-function(constituency){
   p1<-rvest::html_nodes(PAGE,css = p_selector_name)
   p2<-rvest::html_text(p1)
   p3<-gsub("\r\n","",p2)
+  if(p3>1){
+    CNAME<-rvest::html_nodes(PAGE,css=check_sel)
+    CNAME2<-rvest::html_text(CNAME)
+    CNAME3<-gsub("\r\n","",CNAME2)
+    CNAME4<-trimws(CNAME3)
+    CNAME5<-stringr::str_squish(CNAME4)
+    CNAME6<-strsplit(CNAME5, split="Conservative|Labour|Liberal Democtrat|SNP")
+    CLIST<-list()
+    for (i in 1:length(CNAME6)){
+      DF<-as.data.frame(t(as.data.frame(CNAME6[[i]])))
+      colnames(DF)<-c("name","location")
+      CLIST[[i]]<-DF
+    }
+    CNAME7<-purrr::map_df(CLIST,data.frame)
+    CNAME8<-dplyr::mutate(CNAME7,order=1:length(CNAME7$name))
+    CNAME8$location<-tolower(CNAME8$location)
+    check_name<-tolower(constituency)
+    CNAME9<-dplyr::filter(CNAME8,location==check_name)
+    ORD<-CNAME9$order
+    p2<-rvest::html_text(p1[[ORD]])
+    p3<-gsub("\r\n","",p2)
+  }else{
+    p2<-p2
+    p3<-p3
+  }
   mp_name<-gsub("  ","",p3)
   mp_nameA<-tolower(mp_name)
-  mp_name2<- gsub(" *(ms)|(miss)|(dr)|(mrs)|(miss)|(mr)|(sir)$", "", mp_nameA)
+  mp_name2<- gsub(" *(ms)|(miss)|(dr)|(mrs)|(miss)|(mr)|(sir)|(Sir)$", "", mp_nameA)
   mp_name3<-trimws(mp_name2)
   first_name<-stringr::word(mp_name3, 1)
   surname<-tolower(stringr::word(mp_name,-1))
