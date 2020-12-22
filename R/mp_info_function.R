@@ -218,7 +218,7 @@ mp_info<-function(constituency){
       DOB_data2<-"NA"
       birth_year<-"NA"
     }else{
-      DOB_data<-DOB_data
+      #DOB_data<-DOB_data2
       birth_year<-DOB_data2[[1]]
       }
 
