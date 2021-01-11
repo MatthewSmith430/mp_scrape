@@ -26,7 +26,9 @@ mp_info<-function(constituency){
     CNAME3<-gsub("\r\n","",CNAME2)
     CNAME4<-trimws(CNAME3)
     CNAME5<-stringr::str_squish(CNAME4)
-    CNAME6<-strsplit(CNAME5, split="Conservative|Labour|Liberal Democrat|SNP")
+    CNAME5<-stringr::str_replace_all(CNAME5,"\\(|\\)", "")
+    CNAME5<-iconv(CNAME5, "latin1", "ASCII", sub="")
+    CNAME6<-strsplit(CNAME5, split="Conservative|Independent|Labour Co-op|Labour|Liberal Democrat|SNP|Scottish National Party|Sinn Fin")
     CLIST<-list()
     for (i in 1:length(CNAME6)){
       DF<-as.data.frame(t(as.data.frame(CNAME6[[i]])))
@@ -173,6 +175,12 @@ mp_info<-function(constituency){
     mp2<-rvest::html_attr(mpEMP,"href")
   }else{mp2<-mp2}
 
+  if(purrr::is_empty(mp2)){
+    Gfix<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
+    mpFIX<-rvest::html_nodes(webpage,css = Gfix)
+    mp2<-rvest::html_attr(mpFIX,"href")
+  }else{mp2<-mp2}
+
   CHECK1<-stringr::str_detect(mp2,"(UK_Parliament_constituency)")
   if(CHECK1==TRUE){
     GC<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
@@ -208,12 +216,34 @@ mp_info<-function(constituency){
   }else{mp2<-mp2}
 
   CHECK5<-stringr::str_detect(mp2,"(Parliament_of_Scotland_constituency)")
+  CHECK5a<-purrr::is_empty(CHECK5)
+  if(CHECK5a==TRUE){
+    CHECK5<-FALSE
+  }else{CHECK5<-CHECK5}
+
   if(CHECK5==TRUE){
     Gscot<-".infobox > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > a:nth-child(1)"
     mpscot<-rvest::html_nodes(webpage,css = Gscot)
     mp2<-rvest::html_attr(mpscot,"href")
   }else{mp2<-mp2}
 
+  if(purrr::is_empty(mp2)){
+    LR1<-".infobox > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > a:nth-child(1)"
+    mpLR<-rvest::html_nodes(webpage,css = LR1)
+    mp2<-rvest::html_attr(mpLR,"href")
+  }else{mp2<-mp2}
+
+  CHECK6<-stringr::str_detect(mp2,"National_Assembly_for_Wales_electoral_region")
+  CHECK6a<-purrr::is_empty(CHECK6)
+  if(CHECK6a==TRUE){
+    CHECK6<-FALSE
+  }else{CHECK6<-CHECK6}
+
+  if(CHECK6==TRUE){
+    Gwelsh<-".infobox > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > a:nth-child(1)"
+    mpwelsh<-rvest::html_nodes(webpage,css = Gwelsh)
+    mp2<-rvest::html_attr(mpwelsh,"href")
+  }else{mp2<-mp2}
 
   mp_link1<-paste0("https://en.wikipedia.org/",
                    mp2)
